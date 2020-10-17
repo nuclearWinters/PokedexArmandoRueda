@@ -1,0 +1,1 @@
+export {PokemonPrison} from './PokemonPrison';
