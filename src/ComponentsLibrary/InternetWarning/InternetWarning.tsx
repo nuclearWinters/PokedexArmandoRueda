@@ -13,7 +13,9 @@ export const InternetWarning: FC = () => {
   const setIsShowing = () => {
     setShow(false);
   };
-  if (!show) return null;
+  if (!show) {
+    return null;
+  }
   return (
     <View style={container}>
       <TouchableOpacity style={closeContainer} onPress={setIsShowing}>

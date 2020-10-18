@@ -1,4 +1,4 @@
-import React, {FC, useState, useEffect, useRef} from 'react';
+import React, {FC, useState, useEffect, useRef, useCallback} from 'react';
 import {
   ActivityIndicator,
   View,
@@ -29,10 +29,11 @@ export const InfoMoveModal: FC = () => {
   const [info, setInfo] = useState<Info | null>(null);
   const [loading, setLoading] = useState(true);
   const mounted = useRef(true);
-  const fetchInfo = async () => {
+  const url = route.params.move.url;
+  const fetchInfo = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get<Info>(route.params.move.url);
+      const response = await axios.get<Info>(url);
       if (mounted.current) {
         setInfo(response.data);
         setLoading(false);
@@ -42,13 +43,13 @@ export const InfoMoveModal: FC = () => {
         setLoading(false);
       }
     }
-  };
+  }, [url]);
   useEffect(() => {
     fetchInfo();
     return () => {
       mounted.current = false;
     };
-  }, []);
+  }, [fetchInfo]);
   const typeBackgroundColor = types.find(
     (type) => type.name === info?.type.name,
   )?.color;
@@ -66,14 +67,14 @@ export const InfoMoveModal: FC = () => {
       <BackButton />
       {loading ? (
         <ActivityIndicator size="large" color="forestgreen" />
-      ) : !!info ? (
+      ) : info ? (
         <ScrollView
-          style={{flex: 1}}
-          contentContainerStyle={{alignItems: 'center'}}>
+          style={style.flex1}
+          contentContainerStyle={style.scrollStyle}>
           <Text style={style.abilityNameTextStyle}>
             {info.name.replace('-', ' ')}
           </Text>
-          <Text style={{lineHeight: 24}}>
+          <Text style={style.japTextStyle}>
             {info.names.find((item) => item.language.name === 'ja')?.name}
           </Text>
           <Text style={style.shorDescriptionTextStyle}>{shortDesc}</Text>
@@ -94,8 +95,8 @@ export const InfoMoveModal: FC = () => {
             <View>
               <BoardRow
                 title={'PP'}
-                leftStyle={{borderTopStartRadius: 20}}
-                rightStyle={{borderTopEndRadius: 20}}
+                leftStyle={style.rowLeftStyle}
+                rightStyle={style.rowRightStyle}
                 description={String(info.pp)}
               />
               <BoardRow title={'Power'} description={String(info.power)} />
@@ -115,8 +116,8 @@ export const InfoMoveModal: FC = () => {
               />
               <BoardRow
                 title={'Ailment %'}
-                leftStyle={{borderBottomStartRadius: 20}}
-                rightStyle={{borderBottomEndRadius: 20}}
+                leftStyle={style.boardLeftStyle}
+                rightStyle={style.boardRightStyle}
                 description={info.meta.ailment_chance + '%'}
               />
             </View>
@@ -138,7 +139,21 @@ const style: {
   statsContainer: ViewStyle;
   infoText: TextStyle;
   container: ViewStyle;
+  boardLeftStyle: ViewStyle;
+  boardRightStyle: ViewStyle;
+  rowLeftStyle: ViewStyle;
+  rowRightStyle: ViewStyle;
+  flex1: ViewStyle;
+  scrollStyle: ViewStyle;
+  japTextStyle: TextStyle;
 } = {
+  japTextStyle: {lineHeight: 24},
+  scrollStyle: {alignItems: 'center'},
+  flex1: {flex: 1},
+  rowLeftStyle: {borderTopStartRadius: 20},
+  rowRightStyle: {borderTopEndRadius: 20},
+  boardLeftStyle: {borderBottomStartRadius: 20},
+  boardRightStyle: {borderBottomEndRadius: 20},
   container: {
     alignItems: 'center',
     justifyContent: 'center',

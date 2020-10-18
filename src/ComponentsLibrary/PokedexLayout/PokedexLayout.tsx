@@ -36,14 +36,14 @@ export const PokedexLayout: FC<IProps> = ({children, BigButtonOnPress}) => {
             <ImageBackground
               source={pressme}
               resizeMode="contain"
-              style={{height: 50}}
+              style={style.imageHeight}
             />
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={navigateToPrison}>
           <Image
             source={buttonRed}
-            style={[style.smallButton, {marginLeft: 30}]}
+            style={[style.smallButton, style.firstSmallButton]}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={navigateToPrison}>
@@ -65,7 +65,12 @@ const style: {
   pressMeContainer: ViewStyle;
   bigButtonStyle: ImageStyle;
   smallButton: ImageStyle;
+  imageHeight: ImageStyle;
+  firstSmallButton: ImageStyle;
 } = {
+  imageHeight: {
+    height: 50,
+  },
   container: {
     backgroundColor: '#dd0b2e',
     flex: 1,
@@ -90,5 +95,8 @@ const style: {
     width: 30,
     marginLeft: 14,
     marginTop: 6,
+  },
+  firstSmallButton: {
+    marginLeft: 30,
   },
 };

@@ -74,8 +74,8 @@ export const getPokemons = () =>
             );
             await Database.savePokemons(pokemons.data.results);
             resolve({type: GET_POKEMONS, payload: pokemons.data.results});
-          } catch (e) {
-            reject(e);
+          } catch (err) {
+            reject(err);
           }
         }
         reject(e);
@@ -121,8 +121,8 @@ export const getPokemon = (pokemon: IPokemonList) =>
                 moves: pokemonRequested.data.moves.map((move) => move.move),
               },
             });
-          } catch (e) {
-            reject(e);
+          } catch (err) {
+            reject(err);
           }
         } else {
           reject(e);

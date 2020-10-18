@@ -30,7 +30,6 @@ export const Home: FC = () => {
   const dispatch = useDispatch();
   const pokemones = useTypedSelector((state) => state.pokemon.pokemons);
   const [index, setIndex] = useState(152);
-  const currentPokemon = pokemones[index];
   const [isLoading, setIsLoading] = useState(false);
   const [
     wildOrCapturedPokemon,
@@ -43,10 +42,9 @@ export const Home: FC = () => {
       const wildPokemon = async () => {
         try {
           setIsLoading(true);
-          const wildOrCapturedPokemon = await Ducks.Pokemon.getPokemon(
-            currentPokemon,
-          );
-          setWildOrCapturedPokemon(wildOrCapturedPokemon.payload);
+          const currentPokemon = pokemones[index];
+          const newPokemon = await Ducks.Pokemon.getPokemon(currentPokemon);
+          setWildOrCapturedPokemon(newPokemon.payload);
           setIsLoading(false);
         } catch (e) {
           setWildOrCapturedPokemon(null);
@@ -58,7 +56,7 @@ export const Home: FC = () => {
     return () => {
       mounted = false;
     };
-  }, [index]);
+  }, [index, pokemones]);
   const [hitten, setHitten] = useState(false);
   const pan = useRef(new Animated.ValueXY()).current;
   const size = useRef(new Animated.Value(1)).current;
@@ -134,7 +132,9 @@ export const Home: FC = () => {
   };
 
   const onCapturePokemon = async () => {
-    if (!wildOrCapturedPokemon) return;
+    if (!wildOrCapturedPokemon) {
+      return;
+    }
     const captured = await Database.savePokemon(wildOrCapturedPokemon);
     dispatch(Ducks.Pokemon.savePokemon(captured));
     setHitten(false);

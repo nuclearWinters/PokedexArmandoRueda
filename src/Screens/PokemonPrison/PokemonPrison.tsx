@@ -34,7 +34,7 @@ export const PokemonPrison: FC = () => {
       const Pokemon = capturedPokemons.find(({id}) => id === num);
       if (Pokemon) {
         const pokemonType = types.find(
-          (item) => Pokemon.type[0].type.name === item.name,
+          (type) => Pokemon.type[0].type.name === type.name,
         );
         return (
           <TouchableOpacity
@@ -78,7 +78,7 @@ export const PokemonPrison: FC = () => {
         <FlatList<number[]>
           keyExtractor={(_, index) => 'key' + index}
           style={flatListStyle}
-          ListHeaderComponent={() => <View style={{height: 20}} />}
+          ListHeaderComponent={() => <View style={headerHeight} />}
           data={pokeRows}
           renderItem={renderPokeRows}
         />
@@ -95,7 +95,9 @@ const {
   pokeRowStyle,
   container,
   flatListStyle,
+  headerHeight,
 }: {
+  headerHeight: ViewStyle;
   pokemonImageStyle: ImageStyle;
   unknownImageStyle: ImageStyle;
   pokeContainerStyle: ViewStyle;
@@ -103,6 +105,7 @@ const {
   container: ViewStyle;
   flatListStyle: ViewStyle;
 } = {
+  headerHeight: {height: 20},
   pokemonImageStyle: {
     height: 70,
     width: 70,

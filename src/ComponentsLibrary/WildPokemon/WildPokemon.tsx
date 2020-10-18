@@ -51,7 +51,7 @@ export const WildPokemon: FC<IProps> = ({
         onCapture();
       });
     }
-  }, [hitten]);
+  }, [hitten, opacity, onCapture]);
 
   useEffect(() => {
     let mounted = true;
@@ -80,7 +80,7 @@ export const WildPokemon: FC<IProps> = ({
     return () => {
       mounted = false;
     };
-  }, [speed]);
+  }, [speed, height, heightCanvas, widthCanvas, xyAnim]);
 
   return (
     <Animated.View

@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState, useRef} from 'react';
+import React, {FC, useEffect, useState, useRef, useCallback} from 'react';
 import {View, ActivityIndicator, ViewStyle, TextStyle} from 'react-native';
 import {Ducks} from '../../Redux';
 import {useDispatch} from 'react-redux';
@@ -11,7 +11,7 @@ export const Loading: FC = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const mounted = useRef(true);
-  const fetchPokemons = async () => {
+  const fetchPokemons = useCallback(async () => {
     try {
       setIsLoading(true);
       const [capturedPokemons, pokemons] = await Promise.all([
@@ -29,13 +29,13 @@ export const Loading: FC = () => {
         setError(e.message);
       }
     }
-  };
+  }, [dispatch]);
   useEffect(() => {
     fetchPokemons();
     return () => {
       mounted.current = false;
     };
-  }, []);
+  }, [fetchPokemons]);
   return (
     <View style={style.container}>
       {!!error && <ErrorRetry onPress={fetchPokemons} />}

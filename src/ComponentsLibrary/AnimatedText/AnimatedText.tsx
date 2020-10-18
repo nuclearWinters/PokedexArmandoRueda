@@ -13,7 +13,7 @@ export const AnimatedText: FC<IProps> = ({name}) => {
       duration: 500,
       useNativeDriver: false,
     }).start();
-  }, []);
+  }, [opacity]);
   return (
     <Animated.Text
       style={[

@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {View, Button, Text, TextStyle} from 'react-native';
+import {View, Button, Text, TextStyle, ViewStyle} from 'react-native';
 
 interface IProps {
   onPress: () => void;
@@ -7,7 +7,7 @@ interface IProps {
 
 export const ErrorRetry: FC<IProps> = ({onPress}) => {
   return (
-    <View style={{alignItems: 'center'}}>
+    <View style={style.container}>
       <Text style={style.errorText}>
         Ha ocurrido un error. Intenta de nuevo
       </Text>
@@ -18,7 +18,9 @@ export const ErrorRetry: FC<IProps> = ({onPress}) => {
 
 const style: {
   errorText: TextStyle;
+  container: ViewStyle;
 } = {
+  container: {alignItems: 'center'},
   errorText: {
     marginBottom: 20,
     fontSize: 20,
