@@ -19,7 +19,7 @@ import {PokemonMoves} from './src/Screens/PokemonMoves';
 import {IPokemon, Move2} from './src/Redux/Ducks/Pokemon/PokemonTypes';
 import {InfoMoveModal} from './src/Screens/InfoMoveModal';
 
-type MainStackParamList = {
+export type MainStackParamList = {
   Home: undefined;
   Prison: undefined;
   Loading: undefined;
@@ -28,7 +28,7 @@ type MainStackParamList = {
   };
 };
 
-type RootStackParamList = {
+export type RootStackParamList = {
   Main: undefined;
   InfoMoveModal: {
     move: Move2;
@@ -106,7 +106,7 @@ const NavigationProvider = () => {
       mounted = false;
       unsubscribe();
     };
-  }, []);
+  }, [dispatch]);
   return (
     <NavigationContainer>
       <RootStack.Navigator mode="modal">

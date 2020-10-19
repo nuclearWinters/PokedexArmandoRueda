@@ -1,14 +1,11 @@
 import React, {FC} from 'react';
-import {View, FlatList, Image, ImageStyle, ViewStyle} from 'react-native';
+import {View, FlatList, ViewStyle} from 'react-native';
 import {useTypedSelector} from '../../Redux';
 import {PokedexLayout} from '../../ComponentsLibrary/PokedexLayout';
 import {useNavigation} from '@react-navigation/native';
 import {PrisonScreensNavigationProp} from '../../../App';
-import unknownPokemon from '../../imgs/turtleMini.png';
-import {IdBadge} from '../../ComponentsLibrary/Badge/IdBadge';
-import {PokeNameBadge} from '../../ComponentsLibrary/Badge/PokeNameBadge';
 import {InternetWarning} from '../../ComponentsLibrary/InternetWarning';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {PokemonCard} from './PokemonCard';
 
 export const PokemonPrison: FC = () => {
   const navigation = useNavigation<PrisonScreensNavigationProp>();
@@ -32,38 +29,18 @@ export const PokemonPrison: FC = () => {
   const renderPokeRows = ({item}: {item: number[]}) => {
     const Fila = item.map((num) => {
       const Pokemon = capturedPokemons.find(({id}) => id === num);
-      if (Pokemon) {
-        const pokemonType = types.find(
-          (type) => Pokemon.type[0].type.name === type.name,
-        );
-        return (
-          <TouchableOpacity
-            key={num}
-            style={pokeContainerStyle}
-            onPress={() => {
-              navigation.navigate('PokemonMoves', {
-                pokemon: Pokemon,
-              });
-            }}>
-            <Image
-              style={pokemonImageStyle}
-              source={{uri: Pokemon.sprites.front_default}}
-            />
-            <IdBadge text={String(num)} />
-            <PokeNameBadge
-              backgroundColor={pokemonType?.color || '#999'}
-              text={Pokemon.name}
-            />
-          </TouchableOpacity>
-        );
-      } else {
-        return (
-          <View key={num} style={pokeContainerStyle}>
-            <Image style={unknownImageStyle} source={unknownPokemon} />
-            <IdBadge text={String(num)} />
-          </View>
-        );
-      }
+      const pokemonType = types.find(
+        (type) => Pokemon?.type[0].type.name === type.name,
+      );
+      return (
+        <PokemonCard
+          id={String(num)}
+          key={String(num)}
+          backgroundColor={pokemonType?.color || '#999'}
+          Pokemon={Pokemon}
+          navigation={navigation}
+        />
+      );
     });
     return <View style={pokeRowStyle}>{Fila}</View>;
   };
@@ -89,37 +66,17 @@ export const PokemonPrison: FC = () => {
 };
 
 const {
-  pokemonImageStyle,
-  unknownImageStyle,
-  pokeContainerStyle,
   pokeRowStyle,
   container,
   flatListStyle,
   headerHeight,
 }: {
   headerHeight: ViewStyle;
-  pokemonImageStyle: ImageStyle;
-  unknownImageStyle: ImageStyle;
-  pokeContainerStyle: ViewStyle;
   pokeRowStyle: ViewStyle;
   container: ViewStyle;
   flatListStyle: ViewStyle;
 } = {
   headerHeight: {height: 20},
-  pokemonImageStyle: {
-    height: 70,
-    width: 70,
-  },
-  unknownImageStyle: {
-    height: 30,
-    width: 30,
-  },
-  pokeContainerStyle: {
-    height: 90,
-    width: 90,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   pokeRowStyle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
