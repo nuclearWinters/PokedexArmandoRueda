@@ -1,6 +1,6 @@
 # PokedexArmandoRueda
 
-Este es un proyecto que usa React Navigation, Redux y Axios con Typescript. Mantenida para Android y iOS.
+Este es un proyecto que usa React Navigation, Redux, @testing-library/react-native y Axios con Typescript. Mantenida para Android y iOS.
 
 Para correr el proyecto se deben usar los comandos:
 
