@@ -48,7 +48,7 @@ const initialState: IState = {
   ],
 };
 
-export type PokemonTypes = GetPokemons | GetPokemon | SavePokemon;
+export type PokemonTypes = GetPokemons | SavePokemon;
 
 const GET_POKEMONS = 'GET_POKEMONS';
 
@@ -58,78 +58,61 @@ interface GetPokemons {
 }
 
 export const getPokemons = () =>
-  new Promise<GetPokemons>(
-    async (resolve, reject): Promise<void> => {
-      try {
-        const pokemons = await Database.getPokemons();
-        resolve({
-          type: GET_POKEMONS,
-          payload: pokemons,
-        });
-      } catch (e) {
-        if (e.message === 'No hay pokemones guardados previamente') {
-          try {
-            const pokemons = await axios.get<IGetPokemonsResponse>(
-              'https://pokeapi.co/api/v2/pokemon?limit=151',
-            );
-            await Database.savePokemons(pokemons.data.results);
-            resolve({type: GET_POKEMONS, payload: pokemons.data.results});
-          } catch (err) {
-            reject(err);
-          }
+  new Promise<GetPokemons>(async (resolve, reject) => {
+    try {
+      const pokemons = await Database.getPokemons();
+      resolve({
+        type: GET_POKEMONS,
+        payload: pokemons,
+      });
+    } catch (e) {
+      if (e.message === 'No hay pokemones guardados previamente') {
+        try {
+          const pokemons = await axios.get<IGetPokemonsResponse>(
+            'https://pokeapi.co/api/v2/pokemon?limit=151',
+          );
+          await Database.savePokemons(pokemons.data.results);
+          resolve({type: GET_POKEMONS, payload: pokemons.data.results});
+        } catch (err) {
+          reject(err);
         }
-        reject(e);
       }
-    },
-  );
-
-const GET_POKEMON = 'GET_POKEMON';
-
-interface GetPokemon {
-  type: typeof GET_POKEMON;
-  payload: IPokemon;
-}
+      reject(e);
+    }
+  });
 
 export const getPokemon = (pokemon: IPokemonList) =>
-  new Promise<GetPokemon>(
-    async (resolve, reject): Promise<void> => {
-      try {
-        const pokemonSaved = await Database.getPokemonCatched(pokemon.name);
-        resolve({
-          type: GET_POKEMON,
-          payload: pokemonSaved,
-        });
-      } catch (e) {
-        if (
-          e.message === 'No se tienes este pokemon' ||
-          e.message === 'No tienes ningún pokemon'
-        ) {
-          try {
-            const pokemonRequested = await axios.get<IGetPokemonResponse>(
-              pokemon.url,
-            );
-            resolve({
-              type: GET_POKEMON,
-              payload: {
-                name: pokemonRequested.data.name,
-                sprites: {
-                  back_default: pokemonRequested.data.sprites.back_default,
-                  front_default: pokemonRequested.data.sprites.front_default,
-                },
-                id: pokemonRequested.data.id,
-                type: pokemonRequested.data.types,
-                moves: pokemonRequested.data.moves.map((move) => move.move),
-              },
-            });
-          } catch (err) {
-            reject(err);
-          }
-        } else {
-          reject(e);
+  new Promise<IPokemon>(async (resolve, reject) => {
+    try {
+      const pokemonSaved = await Database.getPokemonCatched(pokemon.name);
+      resolve(pokemonSaved);
+    } catch (e) {
+      if (
+        e.message === 'No tienes este pokemon' ||
+        e.message === 'No tienes ningún pokemon'
+      ) {
+        try {
+          const pokemonRequested = await axios.get<IGetPokemonResponse>(
+            pokemon.url,
+          );
+          resolve({
+            name: pokemonRequested.data.name,
+            sprites: {
+              back_default: pokemonRequested.data.sprites.back_default,
+              front_default: pokemonRequested.data.sprites.front_default,
+            },
+            id: pokemonRequested.data.id,
+            type: pokemonRequested.data.types,
+            moves: pokemonRequested.data.moves.map((move) => move.move),
+          });
+        } catch (err) {
+          reject(err);
         }
+      } else {
+        reject(e);
       }
-    },
-  );
+    }
+  });
 
 const SAVE_POKEMON = 'SAVE_POKEMON';
 
@@ -150,10 +133,6 @@ export const reducer = (state = initialState, action: PokemonTypes): IState => {
         ...state,
         pokemons: action.payload,
         isLoading: false,
-      };
-    case GET_POKEMON:
-      return {
-        ...state,
       };
     case SAVE_POKEMON:
       return {

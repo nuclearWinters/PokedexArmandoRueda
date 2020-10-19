@@ -30,7 +30,7 @@ export const PokedexLayout: FC<IProps> = ({children, BigButtonOnPress}) => {
     <SafeAreaView style={style.container}>
       <StatusBar backgroundColor="#dd0b2e" />
       <View style={style.buttonContainer}>
-        <TouchableOpacity onPress={BigButtonOnPress}>
+        <TouchableOpacity onPress={BigButtonOnPress} testID="BigButton">
           <Image source={button} style={style.bigButtonStyle} />
           <View style={style.pressMeContainer}>
             <ImageBackground
@@ -40,17 +40,17 @@ export const PokedexLayout: FC<IProps> = ({children, BigButtonOnPress}) => {
             />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={navigateToPrison}>
+        <TouchableOpacity onPress={navigateToPrison} testID="SmallButton">
           <Image
             source={buttonRed}
             style={[style.smallButton, style.firstSmallButton]}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={navigateToPrison}>
+        <TouchableOpacity onPress={navigateToPrison} testID="SmallButton">
           <Image source={buttonYellow} style={style.smallButton} />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={navigateToPrison}>
+        <TouchableOpacity onPress={navigateToPrison} testID="SmallButton">
           <Image source={buttonGreen} style={style.smallButton} />
         </TouchableOpacity>
       </View>

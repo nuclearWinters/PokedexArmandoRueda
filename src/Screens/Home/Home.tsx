@@ -13,7 +13,10 @@ import {
 } from 'react-native';
 import whosthatpokemon from '../../imgs/turtle.jpg';
 import {useTypedSelector, Ducks} from '../../Redux';
-import {IPokemon} from '../../Redux/Ducks/Pokemon/PokemonTypes';
+import {
+  IPokemon,
+  IGetPokemonResponse,
+} from '../../Redux/Ducks/Pokemon/PokemonTypes';
 import pokeball from '../../imgs/pokeball.png';
 import {WildPokemon} from '../../ComponentsLibrary/WildPokemon';
 import {AnimatedText} from '../../ComponentsLibrary/AnimatedText';
@@ -22,6 +25,7 @@ import {useDispatch} from 'react-redux';
 import {PokedexLayout} from '../../ComponentsLibrary/PokedexLayout';
 import {InternetWarning} from '../../ComponentsLibrary/InternetWarning';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import axios from 'axios';
 
 const widthScreen = Dimensions.get('screen').width;
 
@@ -43,12 +47,36 @@ export const Home: FC = () => {
         try {
           setIsLoading(true);
           const currentPokemon = pokemones[index];
-          const newPokemon = await Ducks.Pokemon.getPokemon(currentPokemon);
-          setWildOrCapturedPokemon(newPokemon.payload);
+          const newPokemon = await Database.getPokemonCatched(
+            currentPokemon.name,
+          );
+          setWildOrCapturedPokemon(newPokemon);
           setIsLoading(false);
         } catch (e) {
-          setWildOrCapturedPokemon(null);
-          setIsLoading(false);
+          if (
+            e.message === 'No tienes este pokemon' ||
+            e.message === 'No tienes ningún pokemon'
+          ) {
+            const currentPokemon = pokemones[index];
+            const pokemonRequested = await axios.get<IGetPokemonResponse>(
+              currentPokemon.url,
+            );
+            const newPokemon = {
+              name: pokemonRequested.data.name,
+              sprites: {
+                back_default: pokemonRequested.data.sprites.back_default,
+                front_default: pokemonRequested.data.sprites.front_default,
+              },
+              id: pokemonRequested.data.id,
+              type: pokemonRequested.data.types,
+              moves: pokemonRequested.data.moves.map((move) => move.move),
+            };
+            setWildOrCapturedPokemon(newPokemon);
+            setIsLoading(false);
+          } else {
+            setWildOrCapturedPokemon(null);
+            setIsLoading(false);
+          }
         }
       };
       wildPokemon();

@@ -63,7 +63,7 @@ export const Database = {
           (item) => name === item.name,
         );
         if (!hasPokemon) {
-          throw new Error('No se tienes este pokemon');
+          throw new Error('No tienes este pokemon');
         }
         resolve(hasPokemon);
       } catch (e) {
@@ -81,6 +81,7 @@ export const Database = {
         resolve(pokemonsCatchedParse);
       } catch (e) {
         if (e.message === 'No tienes ningún pokemon') {
+          console.log('e.message', e.message);
           resolve([]);
         } else {
           reject(e);

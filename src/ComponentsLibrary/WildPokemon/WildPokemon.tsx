@@ -84,6 +84,7 @@ export const WildPokemon: FC<IProps> = ({
 
   return (
     <Animated.View
+      testID="WildPokemon"
       style={[
         style.wildPokemon,
         {
